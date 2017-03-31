@@ -13,19 +13,19 @@
 #include "iopccmd_vmcount.h"
 #include "iopccmd_vmget.h"
 #include "iopccmd_vmset.h"
-#include "client_vm.h"
+#include "iopcops_client_vm.h"
 
 #include "iopccmd_mntbasecount.h"
 #include "iopccmd_mntbaseget.h"
 #include "iopccmd_mntbaseset.h"
-#include "client_mntbase.h"
+#include "iopcops_client_mntbase.h"
 
 #include "iopccmd_raiddevcount.h"
 #include "iopccmd_raiddevget.h"
 #include "iopccmd_raiddevset.h"
-#include "client_raiddev.h"
+#include "iopcops_client_raiddev.h"
 
-#include "client_db.h"
+//#include "client_db.h"
 
 #define TASK_IOPCCMD		"IOPCCMD"
 #define STR_EQUAL(str1, str2) if(strcmp(str1, str2) == 0)
