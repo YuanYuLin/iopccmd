@@ -468,7 +468,7 @@ static uint8_t cmd_raiddevset(int argc, char** argv)
 	printf("%d.dev[%d]path:%s\n", idx, i, info.dev[i].path);
     }
 
-    GET_INSTANCE_CLIENT_RAIDDEV(client_raiddev)->set(index, &info);
+    GET_INSTANCE_CLIENT_RAIDDEV()->set(index, &info);
 
     return 0;
 }
