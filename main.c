@@ -60,9 +60,9 @@ static uint8_t cmd_raw(int argc, char** argv)
     req_data_len = i;
     req.hdr.data_size = req_data_len;
 
-    GET_INSTANCE(ops_mq)->set_to(TASK_IOPCLAUNCHER, &req);
-    GET_INSTANCE(ops_mq)->get_from(TASK_IOPCCMD, &res);
-    GET_INSTANCE(ops_mq)->destroy(TASK_IOPCCMD);
+    GET_INSTANCE_MQ_OBJ()->set_to(TASK_IOPCLAUNCHER, &req);
+    GET_INSTANCE_MQ_OBJ()->get_from(TASK_IOPCCMD, &res);
+    GET_INSTANCE_MQ_OBJ()->destroy(TASK_IOPCCMD);
 
     printf("magic:%x\n", res.hdr.magic);
     printf("src:%s\n", res.hdr.src);
@@ -131,9 +131,9 @@ static uint8_t cmd_vmadd(int argc, char** argv)
     req.hdr.data_size = sizeof(struct req_vmadd_t);
     printf("size: %d, %d\n", sizeof(struct req_vmadd_t), sizeof(req_data));
 
-    GET_INSTANCE(ops_mq)->set_to(TASK_IOPCLAUNCHER, &req);
-    GET_INSTANCE(ops_mq)->get_from(TASK_IOPCCMD, &res);
-    GET_INSTANCE(ops_mq)->destroy(TASK_IOPCCMD);
+    GET_INSTANCE_MQ_OBJ()->set_to(TASK_IOPCLAUNCHER, &req);
+    GET_INSTANCE_MQ_OBJ()->get_from(TASK_IOPCCMD, &res);
+    GET_INSTANCE_MQ_OBJ()->destroy(TASK_IOPCCMD);
 
     printf("magic:%x\n", res.hdr.magic);
     printf("src:%s\n", res.hdr.src);
@@ -152,7 +152,7 @@ static uint8_t cmd_vmadd(int argc, char** argv)
 static uint8_t cmd_vmcount(int argc, char** argv)
 {
     uint32_t count = 0;
-    count = GET_INSTANCE(client_vm)->count();
+    count = GET_INSTANCE_CLIENT_VM()->count();
     printf("count:%d\n", count);
 
     return 0;
@@ -161,7 +161,7 @@ static uint8_t cmd_vmcount(int argc, char** argv)
 static uint8_t cmd_mntbasecount(int argc, char** argv)
 {
     uint32_t count = 0;
-    count = GET_INSTANCE(client_mntbase)->count();
+    count = GET_INSTANCE_CLIENT_MNTBASE()->count();
     printf("count:%d\n", count);
 
     return 0;
@@ -170,7 +170,7 @@ static uint8_t cmd_mntbasecount(int argc, char** argv)
 static uint8_t cmd_raiddevcount(int argc, char** argv)
 {
     uint32_t count = 0;
-    count = GET_INSTANCE(client_raiddev)->count();
+    count = GET_INSTANCE_CLIENT_RAIDDEV()->count();
     printf("count:%d\n", count);
 
     return 0;
@@ -183,7 +183,7 @@ static uint8_t cmd_vmget(int argc, char** argv)
     index = strtoul(argv[1], NULL, 10);
 
     memset(&info, 0, sizeof(struct vm_info_t));
-    GET_INSTANCE(client_vm)->get(index, &info);
+    GET_INSTANCE_CLIENT_VM()->get(index, &info);
 
     printf("index:%d\n", index);
     printf("auto_start:%d\n", info.auto_start);
@@ -203,7 +203,7 @@ static uint8_t cmd_mntbaseget(int argc, char** argv)
     index = strtoul(argv[1], NULL, 10);
 
     memset(&info, 0, sizeof(struct mntbase_info_t));
-    GET_INSTANCE(client_mntbase)->get(index, &info);
+    GET_INSTANCE_CLIENT_MNTBASE()->get(index, &info);
 
     printf("index:%d\n", index);
     printf("enabled:%d\n", info.enabled);
@@ -224,7 +224,7 @@ static uint8_t cmd_raiddevget(int argc, char** argv)
     index = strtoul(argv[1], NULL, 10);
 
     memset(&info, 0, sizeof(struct raiddev_info_t));
-    GET_INSTANCE(client_raiddev)->get(index, &info);
+    GET_INSTANCE_CLIENT_RAIDDEV()->get(index, &info);
 
     printf("index:%d\n", index);
     printf("enabled:%d\n", info.enabled);
@@ -238,7 +238,7 @@ static uint8_t cmd_raiddevget(int argc, char** argv)
 
     return 0;
 }
-
+/*
 static uint8_t cmd_dbgetbool(int argc, char** argv)
 {
     uint8_t* media = argv[1];
@@ -351,7 +351,7 @@ static uint8_t cmd_dbrestore2default(int argc, char** argv)
     GET_INSTANCE(client_db)->restore2default();
     return 0;
 }
-
+*/
 static uint8_t cmd_vmset(int argc, char** argv)
 {
     uint8_t *p_argv = NULL;
@@ -387,7 +387,7 @@ static uint8_t cmd_vmset(int argc, char** argv)
     memcpy(info.base_path, p_argv, strlen(p_argv));
     printf("7.%s\n", info.base_path);
 
-    GET_INSTANCE(client_vm)->set(index, &info);
+    GET_INSTANCE_CLIENT_VM()->set(index, &info);
 
     return 0;
 }
@@ -423,7 +423,7 @@ static uint8_t cmd_mntbaseset(int argc, char** argv)
     memcpy(info.type, p_argv, strlen(p_argv));
     printf("6.type:%s\n", info.type);
 
-    GET_INSTANCE(client_mntbase)->set(index, &info);
+    GET_INSTANCE_CLIENT_MNTBASE()->set(index, &info);
 
     return 0;
 }
@@ -468,7 +468,7 @@ static uint8_t cmd_raiddevset(int argc, char** argv)
 	printf("%d.dev[%d]path:%s\n", idx, i, info.dev[i].path);
     }
 
-    GET_INSTANCE(client_raiddev)->set(index, &info);
+    GET_INSTANCE_CLIENT_RAIDDEV(client_raiddev)->set(index, &info);
 
     return 0;
 }
@@ -553,6 +553,7 @@ int main(int argc, char** argv)
     STR_EQUAL(cmd, "raiddevcount")	cmd_raiddevcount(cnt, &argv[1]);
     STR_EQUAL(cmd, "raiddevget")	cmd_raiddevget(cnt, &argv[1]);
     STR_EQUAL(cmd, "raiddevset")	cmd_raiddevset(cnt, &argv[1]);
+/*
     STR_EQUAL(cmd, "dbgetbool")		cmd_dbgetbool(cnt, &argv[1]);
     STR_EQUAL(cmd, "dbgetuint32")	cmd_dbgetuint32(cnt, &argv[1]);
     STR_EQUAL(cmd, "dbgetstring")	cmd_dbgetstring(cnt, &argv[1]);
@@ -561,6 +562,7 @@ int main(int argc, char** argv)
     STR_EQUAL(cmd, "dbsetstring")	cmd_dbsetstring(cnt, &argv[1]);
     STR_EQUAL(cmd, "save2persist")	cmd_dbsave2persist(cnt, &argv[1]);
     STR_EQUAL(cmd, "restore2default")	cmd_dbrestore2default(cnt, &argv[1]);
+*/
     STR_EQUAL(cmd, "reboot")		cmd_reboot(cnt, &argv[1]);
 
     return 0;
