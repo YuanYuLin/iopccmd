@@ -1,0 +1,5 @@
+config BR2_PACKAGE_IOPCCMD
+	bool "iopccmd"
+	select BR2_PACKAGE_LIBIOPCCMD_CLIENT
+	help
+	  IOPC message queue util.
